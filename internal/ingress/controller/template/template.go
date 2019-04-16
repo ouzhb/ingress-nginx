@@ -430,7 +430,7 @@ func buildProxyPass(host string, b interface{}, loc interface{}) string {
 	upstreamName := "upstream_balancer"
 
 	if location.Service != nil && location.Service.Spec.Type == apiv1.ServiceTypeExternalName {
-		upstreamName = location.Service.Spec.ExternalName
+		upstreamName = location.Service.Spec.ExternalName + "/"
 	}
 
 	for _, backend := range backends {
