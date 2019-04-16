@@ -30,6 +30,8 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+
+	apiv1 "k8s.io/api/core/v1"
 	text_template "text/template"
 	"time"
 
@@ -426,6 +428,10 @@ func buildProxyPass(host string, b interface{}, loc interface{}) string {
 	}
 
 	upstreamName := "upstream_balancer"
+
+	if location.Service != nil && location.Service.Spec.Type == apiv1.ServiceTypeExternalName {
+		upstreamName = location.Service.Spec.ExternalName
+	}
 
 	for _, backend := range backends {
 		if backend.Name == location.Backend {
