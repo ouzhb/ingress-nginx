@@ -241,11 +241,6 @@ function _M.balance()
   if not balancer then
     return
   end
-
-  local external_name = balancer:external_name()
-  if external_name then
-    ngx.var.vhost = external_name
-  end
   
   local peer = balancer:balance()
   if not peer then
