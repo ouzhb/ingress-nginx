@@ -1235,10 +1235,16 @@ stream {
             {{/* By default use vhost as Host to upstream, but allow overrides */}}
             {{ if not (empty $location.UpstreamVhost) }}
             {{ $proxySetHeader }} Host                   "{{ $location.UpstreamVhost }}";
+            {{ else if  $location.Service }}
+             {{ if $location.Service.Spec }}
+               {{ if eq $location.Service.Spec.Type "ExternalName" }}
+            {{ $proxySetHeader }} Host                   "{{ $location.Service.Spec.ExternalName }}";
+               {{ end }}
+             {{ end}}
             {{ else }}
             {{ $proxySetHeader }} Host                   $best_http_host;
             {{ end }}
-
+            
             # Pass the extracted client certificate to the backend
             {{ if not (empty $server.CertificateAuth.CAFileName) }}
             {{ if $server.CertificateAuth.PassCertToUpstream }}
