@@ -1126,6 +1126,10 @@ stream {
             set $proxy_upstream_name    "{{ buildUpstreamName $location }}";
             set $proxy_host             $proxy_upstream_name;
 
+            set_by_lua_block $best_http_host {
+                return balancer.get_best_http_host()
+            }
+
             {{/* redirect to HTTPS can be achieved forcing the redirect or having a SSL Certificate configured for the server */}}
             {{ if (or $location.Rewrite.ForceSSLRedirect (and (not (empty $server.SSLCert.PemFileName)) $location.Rewrite.SSLRedirect)) }}
             {{ if not (isLocationInLocationList $location $all.Cfg.NoTLSRedirectLocations) }}
