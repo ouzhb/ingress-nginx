@@ -221,12 +221,32 @@ function _M.rewrite()
   end
 end
 
+
+function _M.get_best_http_host()
+    local balancer = get_balancer()
+    if not balancer then
+      return
+    end
+    local external_name = balancer:external_name()
+    if external_name then
+      return external_name
+    else
+      return ngx.var.host
+    end
+end
+
+
 function _M.balance()
   local balancer = get_balancer()
   if not balancer then
     return
   end
 
+  local external_name = balancer:external_name()
+  if external_name then
+    ngx.var.vhost = external_name
+  end
+  
   local peer = balancer:balance()
   if not peer then
     ngx.log(ngx.WARN, "no peer was returned, balancer: " .. balancer.name)
